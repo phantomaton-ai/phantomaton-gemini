@@ -58,7 +58,7 @@ describe('Gemini', () => {
 
       await instance.converse([{ role: 'user', content: 'Hello' }], 'System prompt');
       const body = JSON.parse(deps.fetch.lastCall.args[1].body);
-      expect(body.contents[0].parts[0].text).to.equal('System prompt');
+      expect(body.systemInstruction.parts[0].text).to.equal('System prompt');
     });
 
     it('should throw a GeminiError on error response', async () => {
