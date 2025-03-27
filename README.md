@@ -12,7 +12,7 @@ npm install phantomaton-gemini
 
 ## Usage 🕸️
 
-Once the package has been installed, you can integrate the Gemini adapter into your Phantomaton-powered applications by conjuring the `google` function:
+### Standalone Usage
 
 ```javascript
 import { google } from 'phantomaton-gemini';
@@ -29,6 +29,16 @@ const response = await converse([{
 }]);
 console.log(response.content);
 ```
+
+### Phantomaton Plugin Usage
+
+When using with [Phantomaton](https://github.com/phantomaton-ai/phantomaton), you can install the module directly:
+
+```markdown
+/install(module:phantomaton-gemini)
+```
+
+The `include` and `install` methods are automatically handled by the Phantomaton runtime.
 
 ### Obtaining an API Key 🔑
 
