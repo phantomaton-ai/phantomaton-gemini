@@ -19,6 +19,12 @@
   "description": "",
   "type": "module",
   "devDependencies": {
-    "lovecraft": "^1.0.3"
+    "hierophant": "^1.0.1",
+    "lovecraft": "^1.0.3",
+    "priestess": "^1.0.1"
+  },
+  "dependencies": {
+    "phantomaton-conversations": "^1.0.1",
+    "phantomaton-system": "^1.0.0"
   }
 }
