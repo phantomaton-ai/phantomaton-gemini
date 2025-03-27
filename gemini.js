@@ -19,19 +19,19 @@ class Gemini {
 
   async converse(messages, system = '') {
     const payload = {
-      contents: [
-        ...(system ? [{ role: 'system', parts: [{ text: system }] }] : []),
-        ...messages.map(msg => ({
-          role: msg.role,
-          parts: [{ text: msg.content }]
-        }))
-      ],
+      contents: messages.map(msg => ({
+        role: msg.role,
+        parts: [{ text: msg.content }]
+      })),
       generationConfig: {
         temperature: 1,
         topK: 64,
         topP: 0.95,
         maxOutputTokens: this.maxTokens,
         responseMimeType: 'text/plain'
+      },
+      systemInstruction: {
+        parts: [{text: system}]
       }
     };
 

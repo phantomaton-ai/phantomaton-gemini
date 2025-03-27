@@ -11,7 +11,7 @@ class Assistant {
   async converse(turns, message) {
     const messages = [...turns.map(({ message, reply }) => [
       { role: 'user', content: message },
-      { role: 'assistant', content: reply }
+      { role: 'model', content: reply }
     ]).flat(), { role: 'user', content: message } ];
     const system = this.system();
     const { content } = await this.instance.converse(messages, system);
