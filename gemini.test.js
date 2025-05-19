@@ -1,32 +1,33 @@
 import { expect, stub } from 'lovecraft';
-import gemini, { deps, GeminiError } from './gemini.js';
+import gemini, { GeminiError } from './gemini.js';
+import util from './util.js';
 
 describe('Gemini', () => {
   let instance;
 
   beforeEach(() => {
-    stub(deps, 'fetch');
+    stub(util, 'fetch');
     instance = gemini({ apiKey: 'test-api-key' });
   });
 
   afterEach(() => {
-    deps.fetch.restore();
+    util.fetch.restore();
   });
 
   describe('options', () => {
     it('get passed down to the API', () => {
       const options = { apiKey: 'test-api-key', model: 'foo', maxTokens: 123 };
       gemini(options).converse([{ role: 'user', content: 'Hello' }]);
-      expect(deps.fetch.calledOnce).to.equal(true);
-      const body = JSON.parse(deps.fetch.lastCall.args[1].body);
+      expect(util.fetch.calledOnce).to.equal(true);
+      const body = JSON.parse(util.fetch.lastCall.args[1].body);
       expect(body.generationConfig.maxOutputTokens).to.equal(options.maxTokens);
     });
 
     it('provide defaults', () => {
       const options = { apiKey: 'test-api-key'};
       gemini(options).converse([{ role: 'user', content: 'Hello' }]);
-      expect(deps.fetch.calledOnce).to.equal(true);
-      const body = JSON.parse(deps.fetch.lastCall.args[1].body);
+      expect(util.fetch.calledOnce).to.equal(true);
+      const body = JSON.parse(util.fetch.lastCall.args[1].body);
       expect(body.generationConfig.maxOutputTokens).to.be.a('number').greaterThan(0);
     });
   });
@@ -40,7 +41,7 @@ describe('Gemini', () => {
           } 
         }] 
       };
-      deps.fetch.resolves({ ok: true, json: async () => mockResponse });
+      util.fetch.resolves({ ok: true, json: async () => mockResponse });
 
       const response = await instance.converse([{ role: 'user', content: 'Hello' }]);
       expect(response.content[0].text).to.equal('This is a test response.');
@@ -54,16 +55,16 @@ describe('Gemini', () => {
           } 
         }] 
       };
-      deps.fetch.resolves({ ok: true, json: async () => mockResponse });
+      util.fetch.resolves({ ok: true, json: async () => mockResponse });
 
       await instance.converse([{ role: 'user', content: 'Hello' }], 'System prompt');
-      const body = JSON.parse(deps.fetch.lastCall.args[1].body);
+      const body = JSON.parse(util.fetch.lastCall.args[1].body);
       expect(body.systemInstruction.parts[0].text).to.equal('System prompt');
     });
 
     it('should throw a GeminiError on error response', async () => {
       const mockResponse = { error: 'Something went wrong' };
-      deps.fetch.resolves({ ok: false, json: async () => mockResponse });
+      util.fetch.resolves({ ok: false, json: async () => mockResponse });
 
       try {
         await instance.converse([{ role: 'user', content: 'Hello' }]);
@@ -75,7 +76,7 @@ describe('Gemini', () => {
     });
 
     it('should throw a GeminiError on fetch error', async () => {
-      deps.fetch.rejects(new Error('Network error'));
+      util.fetch.rejects(new Error('Network error'));
       
       try {
         await instance.converse([{ role: 'user', content: 'Hello' }]);
