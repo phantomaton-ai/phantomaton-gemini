@@ -1,5 +1,7 @@
 import fetch from 'node-fetch';
 
+import processor from './processor.js';
+
 // To allow easy mocking in test
 export const deps = { fetch };
 
@@ -11,10 +13,12 @@ export class GeminiError extends Error {
 }
 
 class Gemini {
-  constructor({ apiKey, maxTokens, model }) {
+  constructor({ apiKey, home, maxTokens, modalities, model }) {
     this.apiKey = apiKey;
     this.maxTokens = maxTokens || 65536;
+    this.modalities = modalities || ['TEXT'];
     this.model = model || 'gemini-2.5-pro-exp-03-25';
+    this.process = processor({ home });
   }
 
   async converse(messages, system = '') {
@@ -28,7 +32,8 @@ class Gemini {
         topK: 64,
         topP: 0.95,
         maxOutputTokens: this.maxTokens,
-        responseMimeType: 'text/plain'
+        responseMimeType: 'text/plain',
+        responseModalities: this.modalities
       },
       systemInstruction: {
         parts: [{text: system}]
@@ -50,7 +55,7 @@ class Gemini {
       }
 
       const response = await fetched.json();
-      const content = response.candidates[0].content.parts[0].text;
+      const content = this.process(response.candidates[0].content.parts);
       
       return { 
         role: 'assistant', 
