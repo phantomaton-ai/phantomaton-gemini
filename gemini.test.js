@@ -62,6 +62,18 @@ describe('Gemini', () => {
       expect(body.systemInstruction.parts[0].text).to.equal('System prompt');
     });
 
+    it('show accept structured content', async () => {
+      const mockResponse = { candidates: [{
+        content: { parts: [{ text: 'This is a test response.' }] }
+      }] };
+      util.fetch.resolves({ ok: true, json: async () => mockResponse });
+
+      const response = await instance.converse([{ role: 'user', content: [
+        { text: 'Hello' }
+      ] }]);
+      expect(response.content[0].text).to.equal('This is a test response.');
+    });
+
     it('should throw a GeminiError on error response', async () => {
       const mockResponse = { error: 'Something went wrong' };
       util.fetch.resolves({ ok: false, json: async () => mockResponse });

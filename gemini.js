@@ -21,9 +21,9 @@ class Gemini {
 
   async converse(messages, system = '') {
     const payload = {
-      contents: messages.map(msg => ({
-        role: msg.role,
-        parts: [{ text: msg.content }]
+      contents: messages.map(({ role, content }) => ({
+        role,
+        parts: Array.isArray(content) ? content : [{ text: content }]
       })),
       generationConfig: {
         temperature: 1,
