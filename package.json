@@ -1,6 +1,6 @@
 {
   "name": "phantomaton-gemini",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "main": "phantomaton-gemini.js",
   "scripts": {
     "all": "lovecraft -a",
