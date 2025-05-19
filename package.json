@@ -24,7 +24,9 @@
     "priestess": "^1.0.1"
   },
   "dependencies": {
+    "node-fetch": "^3.3.2",
     "phantomaton-conversations": "^1.0.1",
-    "phantomaton-system": "^1.0.0"
+    "phantomaton-system": "^1.0.0",
+    "uuid": "^11.1.0"
   }
 }
