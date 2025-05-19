@@ -1,9 +1,7 @@
-import fetch from 'node-fetch';
+import path from 'path';
 
 import processor from './processor.js';
-
-// To allow easy mocking in test
-export const deps = { fetch };
+import util from './util.js';
 
 export class GeminiError extends Error {
   constructor(message, response) {
@@ -18,7 +16,7 @@ class Gemini {
     this.maxTokens = maxTokens || 65536;
     this.modalities = modalities || ['TEXT'];
     this.model = model || 'gemini-2.5-pro-exp-03-25';
-    this.process = processor({ home });
+    this.process = processor({ home: home || path.join('data', 'images') });
   }
 
   async converse(messages, system = '') {
@@ -43,7 +41,7 @@ class Gemini {
     try {
       const url = `https://generativelanguage.googleapis.com/v1beta/models/${this.model}:generateContent?key=${this.apiKey}`;
       
-      const fetched = await deps.fetch(url, {
+      const fetched = await util.fetch(url, {
         body: JSON.stringify(payload),
         headers: { 'Content-Type': 'application/json' },
         method: 'POST',
