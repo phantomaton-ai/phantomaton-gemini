@@ -21,8 +21,9 @@ const converse = (messages) => google({
   apiKey: 'your-google-ai-studio-api-key', // Required
   home: 'some/path',                       // Where to save files (data/images by default)
   maxTokens: 4096,                         // 65536 by default
-  moodalities: ['IMAGE', 'TEXT'],          // Just ['TEXT'] but default
-  model: 'gemini-2.5-pro-exp-03-25'        // Default Gemini model
+  modalities: ['IMAGE', 'TEXT'],           // Just ['TEXT'] but default
+  model: 'gemini-2.5-pro-exp-03-25',       // Default Gemini model
+  systemless: true                         // Suppress `systemInstruction` in payload
 }).converse(messages);
 
 const response = await converse([{ 

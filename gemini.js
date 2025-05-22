@@ -11,12 +11,13 @@ export class GeminiError extends Error {
 }
 
 class Gemini {
-  constructor({ apiKey, home, maxTokens, modalities, model }) {
+  constructor({ apiKey, home, maxTokens, modalities, model, systemless }) {
     this.apiKey = apiKey;
     this.maxTokens = maxTokens || 65536;
     this.modalities = modalities || ['TEXT'];
     this.model = model || 'gemini-2.5-pro-exp-03-25';
     this.process = processor({ home: home || path.join('data', 'images') });
+    this.systemless = systemless;
   }
 
   async converse(messages, system = '') {
@@ -32,11 +33,18 @@ class Gemini {
         maxOutputTokens: this.maxTokens,
         responseMimeType: 'text/plain',
         responseModalities: this.modalities
-      },
-      systemInstruction: {
-        parts: [{text: system}]
-      }
-    };
+      }    };
+    if (!this.systemless) {
+      payload.systemInstruction = { parts: [{ text: system }] };
+    } else {
+      payload.contents = [
+        {
+          role: 'user',
+          parts: [{ text: system }]
+        },
+        ...(payload.contents)
+      ];
+    }
 
     try {
       const url = `https://generativelanguage.googleapis.com/v1beta/models/${this.model}:generateContent?key=${this.apiKey}`;

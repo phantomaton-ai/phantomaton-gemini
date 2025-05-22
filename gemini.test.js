@@ -21,6 +21,7 @@ describe('Gemini', () => {
       expect(util.fetch.calledOnce).to.equal(true);
       const body = JSON.parse(util.fetch.lastCall.args[1].body);
       expect(body.generationConfig.maxOutputTokens).to.equal(options.maxTokens);
+      expect(body.systemInstruction).not.to.be.undefined;
     });
 
     it('provide defaults', () => {
@@ -29,6 +30,14 @@ describe('Gemini', () => {
       expect(util.fetch.calledOnce).to.equal(true);
       const body = JSON.parse(util.fetch.lastCall.args[1].body);
       expect(body.generationConfig.maxOutputTokens).to.be.a('number').greaterThan(0);
+    });
+
+    it('can suppress system instructions', () => {
+      const options = { apiKey: 'test-api-key', systemless: true };
+      gemini(options).converse([{ role: 'user', content: 'Hello' }]);
+      expect(util.fetch.calledOnce).to.equal(true);
+      const body = JSON.parse(util.fetch.lastCall.args[1].body);
+      expect(body.systemInstruction).to.be.undefined;
     });
   });
 
@@ -62,7 +71,7 @@ describe('Gemini', () => {
       expect(body.systemInstruction.parts[0].text).to.equal('System prompt');
     });
 
-    it('show accept structured content', async () => {
+    it('accepts structured content', async () => {
       const mockResponse = { candidates: [{
         content: { parts: [{ text: 'This is a test response.' }] }
       }] };
